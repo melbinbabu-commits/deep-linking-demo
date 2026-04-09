@@ -43,6 +43,11 @@
                 android:host="heystyle.chottu.link"
                 android:pathPrefix="/third"
                 />
+                 <data
+                android:scheme="https"
+                android:host="heystyle.chottu.link"
+                android:pathPrefix="/first"
+                />
         </intent-filter>
         <!-- Custom scheme for development/testing -->
         <intent-filter>

@@ -29,9 +29,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     _router = GoRouter(
-      initialLocation: '/',
+      initialLocation: '/first',
       routes: [
-        GoRoute(path: '/', builder: (context, state) => const FirstScreen()),
+        GoRoute(path: '/first', builder: (context, state) => const FirstScreen()),
         GoRoute(
           path: '/second',
           builder: (context, state) => const SecondScreen(),
@@ -53,9 +53,10 @@ class _MyAppState extends State<MyApp> {
         String path = uri.path.isEmpty ? '/' : uri.path;
         
         // If path is empty but we have a scheme, use default path
-        if (path == '/' && uri.scheme.isNotEmpty) {
+        if (path == '/' && uri.scheme.isNotEmpty ) {
           path = '/';
         }
+        
         
         debugPrint(" 📍 Navigating to path: $path");
         debugPrint(" 📍 Full URI: $link");
