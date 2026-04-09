@@ -8,8 +8,8 @@ class LinkSharingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final links = [
       {'title': 'First Screen', 'path': 'https://heystyle.chottu.link/first'},
-      {'title': 'Second Screen', 'path': 'https://heystyle.chottu.link/second'},
-      {'title': 'Third Screen', 'path': 'https://heystyle.chottu.link/third'},
+      {'title': 'Second Screen', 'path': 'https://heystyle.chottu.link/first/second'},
+      {'title': 'Third Screen', 'path': 'https://heystyle.chottu.link/first/third'},
     ];
 
     return Scaffold(

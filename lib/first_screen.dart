@@ -15,11 +15,11 @@ class FirstScreen extends StatelessWidget {
         children: [
           const Center(child: Text('This is the first screen')),
           ElevatedButton(
-            onPressed: () => context.push('/second'),
+            onPressed: () => context.push('/first/second'),
             child: const Text('Go to Second Screen'),
           ),
           ElevatedButton(
-            onPressed: () => context.push('/third'),
+            onPressed: () => context.push('/first/third'),
             child: const Text('Go to Third Screen'),
           ),
           // ElevatedButton(
@@ -27,7 +27,7 @@ class FirstScreen extends StatelessWidget {
           //   child: const Text('Create Second Screen Deep Link'),
           // ),
           ElevatedButton(
-            onPressed: () => context.push('/link-sharing'),
+            onPressed: () => context.push('/first/link-sharing'),
             child: const Text('Go to Link Generation Screen'),
           ),
           ElevatedButton(

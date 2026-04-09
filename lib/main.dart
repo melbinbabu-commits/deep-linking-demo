@@ -20,9 +20,9 @@ void main() async {
         .first
         .timeout(const Duration(milliseconds: 300));
 
-    final uri = Uri.tryParse('https://heystyle.chottu.link/first');
-    if (uri != null && uri.path.isNotEmpty && uri.path != '/') {
-      coldStartPath = uri.path;
+    final uri = Uri.tryParse(firstLink);
+    if (uri != null) {
+      coldStartPath = _mapIncomingPathToAppLocation(uri.path);
       debugPrint("🚀 Cold start deep link captured: $coldStartPath");
     }
   } catch (_) {
@@ -44,61 +44,50 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late final GoRouter _router;
 
-  static const _nestedRoutes = {'/second', '/third', '/link-sharing'};
-
   @override
   void initState() {
     super.initState();
 
     _router = GoRouter(
-      // Cold start: go directly to deep link screen — zero flash
       initialLocation: widget.coldStartPath ?? '/first',
 
       routes: [
         GoRoute(
           path: '/first',
           builder: (context, state) => const FirstScreen(),
+          routes: [
+            GoRoute(
+              path: 'second',
+              builder: (context, state) => const SecondScreen(),
+            ),
+            GoRoute(
+              path: 'third',
+              builder: (context, state) => const ThirdScreen(),
+            ),
+            GoRoute(
+              path: 'link-sharing',
+              builder: (context, state) => const LinkSharingScreen(),
+            ),
+          ],
         ),
         GoRoute(
-          path: '/second',
-          builder: (context, state) => const SecondScreen(),
-        ),
-        GoRoute(
-          path: '/third',
-          builder: (context, state) => const ThirdScreen(),
-        ),
-        GoRoute(
-          path: '/link-sharing',
-          builder: (context, state) => const LinkSharingScreen(),
+          path: '/',
+          redirect: (context, state) => '/first',
         ),
       ],
     );
 
-    // This listener now only handles WARM START / foreground links
-    // because the cold start link was already consumed above in main()
     ChottuLink.onLinkReceived.listen((String link) {
       debugPrint("✅ Warm link received: $link");
 
       final uri = Uri.tryParse(link);
       if (uri == null) return;
 
-      final String path = uri.path.isEmpty ? '/' : uri.path;
+      final String path = _mapIncomingPathToAppLocation(uri.path);
       debugPrint("📍 Navigate to: $path");
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-
-        if (_nestedRoutes.contains(path)) {
-          // Push target on top of /first so back button works
-          // _router.go('/first');
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            _router.push('/first/third');
-          });
-        } else {
-          _router.go(path);
-        }
-      });
+      if (!mounted) return;
+      _router.go(path);
     });
   }
 
@@ -111,5 +100,23 @@ class _MyAppState extends State<MyApp> {
       ),
       routerConfig: _router,
     );
+  }
+}
+
+String _mapIncomingPathToAppLocation(String rawPath) {
+  final normalizedPath = rawPath.isEmpty ? '/' : rawPath;
+
+  switch (normalizedPath) {
+    case '/':
+    case '/first':
+      return '/first';
+    case '/second':
+      return '/first/second';
+    case '/third':
+      return '/first/third';
+    case '/link-sharing':
+      return '/first/link-sharing';
+    default:
+      return normalizedPath;
   }
 }
