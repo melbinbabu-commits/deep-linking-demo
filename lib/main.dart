@@ -1,6 +1,7 @@
 import 'package:chottu_link/chottu_link.dart';
 
 import 'package:deeplinking/first_screen.dart';
+import 'package:deeplinking/link_sharing_screen.dart';
 import 'package:deeplinking/second_screen.dart';
 import 'package:deeplinking/third_screen.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,7 @@ class _MyAppState extends State<MyApp> {
           path: '/third',
           builder: (context, state) => const ThirdScreen(),
         ),
+        GoRoute(path: '/link-sharing', builder: (context, state) => const LinkSharingScreen())
       ],
     );
 
@@ -47,18 +49,20 @@ class _MyAppState extends State<MyApp> {
 
       final uri = Uri.tryParse(link);
       if (uri != null) {
-        final path = '/second';
+        // Extract path from URI, handling both scheme-based and path-only links
+        String path = uri.path.isEmpty ? '/' : uri.path;
+        
+        // If path is empty but we have a scheme, use default path
+        if (path == '/' && uri.scheme.isNotEmpty) {
+          path = '/';
+        }
+        
         debugPrint(" 📍 Navigating to path: $path");
+        debugPrint(" 📍 Full URI: $link");
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
-            if (path == '/second') {
-              _router.push('/second');
-            } else if (path == '/third') {
-              _router.push('/third');
-            } else {
-              _router.go('/');
-            }
+            _router.push(path);
           }
         });
       }

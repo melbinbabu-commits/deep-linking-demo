@@ -28,6 +28,11 @@
             <category android:name="android.intent.category.DEFAULT"/>
             <category android:name="android.intent.category.BROWSABLE"/>
             <!-- Change "yourapp.chottu.link" to the special domain you set up for your ChottuLink URLs -->
+             <data
+                android:scheme="https"
+                android:host="heystyle.chottu.link"
+                android:pathPrefix="/fourth"
+                />
             <data
                 android:scheme="https"
                 android:host="heystyle.chottu.link"

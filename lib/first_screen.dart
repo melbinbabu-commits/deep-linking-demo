@@ -27,7 +27,11 @@ class FirstScreen extends StatelessWidget {
             child: const Text('Create Second Screen Deep Link'),
           ),
           ElevatedButton(
-            onPressed: () => chottuLinkCration('/third'),
+            onPressed: () => context.push('/link-sharing'),
+            child: const Text('Go to Link Generation Screen'),
+          ),
+          ElevatedButton(
+            onPressed: () => chottuLinkCration('/fourth'),
             child: const Text('Create Third Screen Deep Link'),
           ),
         ],
