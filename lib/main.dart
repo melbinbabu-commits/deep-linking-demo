@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:chottu_link/chottu_link.dart';
+import 'package:chottu_link/wrapper/chottu_link_platform_interface.dart';
 
 import 'package:deeplinking/first_screen.dart';
 import 'package:deeplinking/link_sharing_screen.dart';
@@ -10,32 +13,11 @@ import 'package:go_router/go_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ChottuLink.init(apiKey: 'c_app_uFWIcj8pXff28y83rSGCbBHCGKIsC7Ev');
-
-  // Try to get the cold start link from the stream within a short timeout.
-  // If the app was opened via a deep link, the first stream event arrives
-  // almost immediately. If no link arrives, we treat it as a normal launch.
-  String? coldStartPath;
-  try {
-    final firstLink = await ChottuLink.onLinkReceived
-        .first
-        .timeout(const Duration(milliseconds: 300));
-
-    final uri = Uri.tryParse(firstLink);
-    if (uri != null) {
-      coldStartPath = _mapIncomingPathToAppLocation(uri.path);
-      debugPrint("🚀 Cold start deep link captured: $coldStartPath");
-    }
-  } catch (_) {
-    // Timeout = normal launch, no deep link
-    debugPrint("ℹ️ No cold start deep link");
-  }
-
-  runApp(MyApp(coldStartPath: coldStartPath));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final String? coldStartPath;
-  const MyApp({super.key, this.coldStartPath});
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -43,13 +25,16 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final GoRouter _router;
+  StreamSubscription<String>? _linkSubscription;
+  bool _isBootstrappingInitialLink = true;
+  String? _initialHandledPath;
 
   @override
   void initState() {
     super.initState();
 
     _router = GoRouter(
-      initialLocation: widget.coldStartPath ?? '/first',
+      initialLocation: '/first',
 
       routes: [
         GoRoute(
@@ -77,18 +62,45 @@ class _MyAppState extends State<MyApp> {
       ],
     );
 
-    ChottuLink.onLinkReceived.listen((String link) {
-      debugPrint("✅ Warm link received: $link");
+    _linkSubscription = ChottuLink.onLinkReceived.listen(_handleIncomingLink);
+    unawaited(_bootstrapInitialLink());
+  }
 
-      final uri = Uri.tryParse(link);
-      if (uri == null) return;
+  Future<void> _bootstrapInitialLink() async {
+    try {
+      await ChottuLinkPlatform.instance.getAppLinkData();
+    } catch (error, stackTrace) {
+      debugPrint('❌ Failed to bootstrap initial link: $error');
+      debugPrintStack(stackTrace: stackTrace);
+    } finally {
+      _isBootstrappingInitialLink = false;
+      _initialHandledPath = null;
+    }
+  }
 
-      final String path = _mapIncomingPathToAppLocation(uri.path);
-      debugPrint("📍 Navigate to: $path");
+  void _handleIncomingLink(String link) {
+    final uri = Uri.tryParse(link);
+    if (uri == null) return;
 
-      if (!mounted) return;
-      _router.go(path);
-    });
+    final String path = _mapIncomingPathToAppLocation(uri.path);
+    debugPrint("📍 Navigate to: $path");
+
+    if (_isBootstrappingInitialLink) {
+      if (_initialHandledPath == path) {
+        return;
+      }
+      _initialHandledPath ??= path;
+    }
+
+    if (!mounted) return;
+    _router.go(path);
+  }
+
+  @override
+  void dispose() {
+    _linkSubscription?.cancel();
+    _router.dispose();
+    super.dispose();
   }
 
   @override
