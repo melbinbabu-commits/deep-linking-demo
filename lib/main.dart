@@ -35,7 +35,10 @@ class _MyAppState extends State<MyApp> {
 
     _router = GoRouter(
       initialLocation: '/first',
-
+errorBuilder: (context, state) => Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: Center(child: Text('NOT FOUND')),
+      ),
       routes: [
         GoRoute(
           path: '/first',

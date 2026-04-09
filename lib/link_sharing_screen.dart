@@ -28,6 +28,6 @@ class LinkSharingScreen extends StatelessWidget {
   }
 
   void _shareLink(BuildContext context, String path) {
- Share.share('Check out this link: $path');
+ Share.share('Check out this link: $path',subject: 'join elevate now');
   }
 }
