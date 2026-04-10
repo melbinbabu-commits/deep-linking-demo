@@ -304,6 +304,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  moengage_flutter:
+    dependency: "direct main"
+    description:
+      name: moengage_flutter
+      sha256: "9e2de85cba503dad06032a46c989c914240f90ba76b736c142f9a86056c1457b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.5.0"
+  moengage_flutter_android:
+    dependency: transitive
+    description:
+      name: moengage_flutter_android
+      sha256: a2ff435488c45c7a82a81a876dd85cdc4e7c2da7510b91f691aa8e7c396b9998
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.5.0"
+  moengage_flutter_ios:
+    dependency: transitive
+    description:
+      name: moengage_flutter_ios
+      sha256: "3e6ca00deb1fb97a13199c6c929e328ff80bfe980d1b2ae7bedd0933b44da0b4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.0"
+  moengage_flutter_platform_interface:
+    dependency: transitive
+    description:
+      name: moengage_flutter_platform_interface
+      sha256: "6a74b37b75ea3163cf2cdc4f9e72b2c943fd0e53296abff265d0e56141c814b6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
+  moengage_flutter_web:
+    dependency: transitive
+    description:
+      name: moengage_flutter_web
+      sha256: "620b47aeca6ce27b0fde7cf3025393c5244183c976349e30796d863edd0a8449"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.0"
   native_toolchain_c:
     dependency: transitive
     description:

@@ -9,10 +9,13 @@ import 'package:deeplinking/second_screen.dart';
 import 'package:deeplinking/third_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moengage_flutter/moengage_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ChottuLink.init(apiKey: 'c_app_uFWIcj8pXff28y83rSGCbBHCGKIsC7Ev');
+// KT7PNRZ2BNB2YJFYP0M0HWID
+ 
   runApp(const MyApp());
 }
 
@@ -32,7 +35,14 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+ final MoEngageFlutter moengagePlugin = MoEngageFlutter("KT7PNRZ2BNB2YJFYP0M0HWID_DEBUG");
+moengagePlugin.initialise();
+ moengagePlugin.identifyUser("09876qwerty");
 
+ moengagePlugin.trackEvent(
+"First app open",
+MoEProperties()..addAttribute("source", "flutter"),
+);
     _router = GoRouter(
       initialLocation: '/first',
 errorBuilder: (context, state) => Scaffold(
